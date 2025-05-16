@@ -14,9 +14,7 @@ import mate.academy.service.MovieSessionService;
 import mate.academy.service.OrderService;
 import mate.academy.service.ShoppingCartService;
 import mate.academy.service.impl.CinemaHallServiceImpl;
-import mate.academy.service.impl.MovieServiceImpl;
 import mate.academy.service.impl.MovieSessionServiceImpl;
-import mate.academy.service.impl.ShoppingCartServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,26 +26,25 @@ public class Main {
         film.setDescription("The film tells the true story of the "
                 + "struggle between the Ford and Ferrari teams that erupted at "
                 + "the 1966 Le Mans race.");
-
-        MovieService movieService = new MovieServiceImpl();
+        Injector injector = Injector.getInstance("mate.academy");
+        MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
         movieService.add(film);
 
-        CinemaHall cinemaHall = new CinemaHall();
+        CinemaHall cinemaHall = (CinemaHall) injector.getInstance(CinemaHall.class);
         cinemaHall.setCapacity(150);
         cinemaHall.setDescription("Main Hall");
 
-        MovieSession movieSession = new MovieSession();
+        MovieSession movieSession = (MovieSession) injector.getInstance(MovieSession.class);
         movieSession.setMovie(film);
         movieSession.setCinemaHall(cinemaHall);
         movieSession.setShowTime(LocalDateTime.now().plusDays(1));
 
-        ShoppingCartService service = new ShoppingCartServiceImpl();
+        ShoppingCartService service = (ShoppingCartService)
+                injector.getInstance(ShoppingCartService.class);
         service.registerNewShoppingCart(bob);
         service.addSession(movieSession, bob);
 
         ShoppingCart shoppingCart = service.getByUser(bob);
-
-        Injector injector = Injector.getInstance("mate.academy");
         OrderService orderService = (OrderService) injector.getInstance(OrderService.class);
 
         orderService.completeOrder(shoppingCart);
